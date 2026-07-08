@@ -1,59 +1,90 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
 
 export default function Chat() {
+  const [messages, setMessages] = useState([
+    {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      content: "Hello! 👋 I'm your AI language coach. How can I help you today?",
+    },
+  ]);
 
-    const [messages, setMessages] = useState([
+  const [isTyping, setIsTyping] = useState(false);
+
+  const bottomRef = useRef(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({
+      behavior: "smooth",
+    });
+  }, [messages, isTyping]);
+
+  function handleSend(text) {
+    if (!text.trim()) return;
+
+    const userMessage = {
+      id: crypto.randomUUID(),
+      role: "user",
+      content: text,
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    setIsTyping(true);
+
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
         {
-            role: "assistant",
-            content: "Hello! I'm your AI language coach."
-        }
-    ]);
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: `You said: "${text}"`,
+        },
+      ]);
 
-    function sendMessage(text){
+      setIsTyping(false);
+    }, 800);
+  }
 
-        if(!text.trim()) return;
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+      }}
+    >
+      <div
+        style={{
+          flex: 1,
+          overflowY: "auto",
+          padding: 24,
+        }}
+      >
+        {messages.map((message) => (
+          <ChatMessage
+            key={message.id}
+            message={message}
+          />
+        ))}
 
-        const userMessage={
-            role:"user",
-            content:text
-        };
+        {isTyping && (
+          <p
+            style={{
+              color: "#888",
+              fontStyle: "italic",
+            }}
+          >
+            AI is typing...
+          </p>
+        )}
 
-        const botMessage={
-            role:"assistant",
-            content:`You said: ${text}`
-        };
+        <div ref={bottomRef} />
+      </div>
 
-        setMessages(prev=>[
-            ...prev,
-            userMessage,
-            botMessage
-        ]);
-
-    }
-
-    return(
-
-        <div className="flex flex-col h-full">
-
-            <div className="flex-1 overflow-auto p-6">
-
-                {messages.map((message,index)=>(
-                    <ChatMessage
-                        key={index}
-                        message={message}
-                    />
-                ))}
-
-            </div>
-
-            <ChatInput
-                onSend={sendMessage}
-            />
-
-        </div>
-
-    )
-
+      <ChatInput onSend={handleSend} />
+    </div>
+  );
 }
