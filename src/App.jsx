@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import Chat from "./components/Chat/Chat";
 
 import {
   Home,
@@ -151,13 +152,13 @@ const showToast = (message) => {
           
             showToast(
               nextTheme === "dark"
-                ? "🌙 Dark thema is active."
-                : "☀️ Light thema is active."
+                ? "🌙 "
+                : "☀️ "
             );
           }}
         >
           {
-theme==="dark"
+theme==="light"
 ?
 <Sun size={18}/>
 :
@@ -256,39 +257,56 @@ return (
              Welcome to your AI-powered personal language coach.
           </p>
 
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns:
-                "repeat(auto-fit,minmax(250px,1fr))",
-              gap: 20,
-            }}
-          >
-            <Card
-  colors={colors}
-  title="🎯 Daily Goal"
-  value={`${stats.learned} / ${stats.goal}`}
-/>
+          {page === "dashboard" && (
+  <div
+    style={{
+      display: "grid",
+      gridTemplateColumns: "repeat(auto-fit,minmax(250px,1fr))",
+      gap: 20,
+    }}
+  >
+    <Card
+      colors={colors}
+      title="🎯 Daily Goal"
+      value={`${stats.learned} / ${stats.goal}`}
+    />
 
-<Card
-  colors={colors}
-  title="🔥 Streak"
-  value={`${stats.streak} Gün`}
-/>
+    <Card
+      colors={colors}
+      title="🔥 Streak"
+      value={`${stats.streak} Gün`}
+    />
 
-<Card
-  colors={colors}
-  title="⭐ Favorites"
-  value={stats.favorites}
-/>
+    <Card
+      colors={colors}
+      title="⭐ Favorites"
+      value={stats.favorites}
+    />
 
-<Card
-  colors={colors}
-  title="🏆 Medal"
-  value="No medal yet"
-/>
-          </div>
+    <Card
+      colors={colors}
+      title="🏆 Medal"
+      value="No medal yet"
+    />
+  </div>
+)}
+
+{page === "chat" && (
+  <div
+    style={{
+      height: "calc(100vh - 220px)",
+      border: `1px solid ${colors.border}`,
+      borderRadius: 18,
+      overflow: "hidden",
+      background: colors.surface,
+    }}
+  >
+    <Chat />
+  </div>
+)}
+
         </main>
+        
       </div>
 
       {toast && (

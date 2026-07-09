@@ -22,6 +22,8 @@ export default function Chat() {
   }, [messages, isTyping]);
 
   function handleSend(text) {
+    console.log("SEND",text);
+    
     if (!text.trim()) return;
 
     const userMessage = {

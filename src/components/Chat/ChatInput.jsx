@@ -5,9 +5,8 @@ export default function ChatInput({ onSend }) {
 
   function submit() {
     if (!text.trim()) return;
-
+  
     onSend(text);
-
     setText("");
   }
 
@@ -21,34 +20,41 @@ export default function ChatInput({ onSend }) {
   return (
     <div
       style={{
-        borderTop: "1px solid #2d3748",
-        padding: 20,
         display: "flex",
-        gap: 12,
+        gap: 14,
+        padding: 20,
+        borderTop: "1px solid #334155",
       }}
     >
       <textarea
         rows={2}
         value={text}
-        placeholder="Write something..."
+        placeholder="Write your message..."
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         style={{
           flex: 1,
           resize: "none",
-          borderRadius: 12,
+          borderRadius: 14,
+          border: "1px solid #475569",
+          background: "#0F172A",
+          color: "#fff",
           padding: 14,
-          fontSize: 16,
+          fontSize: 15,
+          outline: "none",
         }}
       />
 
       <button
         onClick={submit}
         style={{
-          width: 90,
-          borderRadius: 12,
+          width: 110,
           border: "none",
+          borderRadius: 14,
           cursor: "pointer",
+          background: "#7C3AED",
+          color: "white",
+          fontWeight: 600,
         }}
       >
         Send
