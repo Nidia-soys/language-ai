@@ -1,37 +1,89 @@
 const MODEL = "llama3:latest";
+// İstersen:
+// const MODEL = "qwen3:8b";
 
 export async function askAI(messages) {
+  const conversation = messages
+    .map((m) => `${m.role}: ${m.content}`)
+    .join("\n");
 
-    const SYSTEM_PROMPT = `
-You are an AI language teacher.
+  const prompt = `
+You are Lingova AI.
+
+You are an English teacher.
+
+Always answer using EXACTLY this format.
+
+###REPLY###
+...
+
+###TRANSLATION###
+...
+
+###GRAMMAR###
+...
+
+###NATURAL###
+...
 
 Rules:
 
-- answer only in English
-- maximum 3 sentences
-- keep answers short
-- after every answer write:
+- You are a professional English teacher.
+- Your first job is to answer the user's question.
+- Never avoid the question.
+- Never say:
+"What a great question"
+"Interesting question"
+"Let's explore"
+"Let's dive into"
+unless the user explicitly asks for a discussion.
 
-🇹🇷 Turkish Translation
+If the user asks the meaning of a word:
 
-then
+1. Give the definition in simple English.
+2. Give one example sentence.
+3. Translate the meaning into Turkish.
 
-✨ Grammar Feedback
+Grammar:
 
-then
+- Correct only the user's sentence.
+- If there is no mistake write:
+"No grammar mistakes."
 
-💡 Natural Alternative
+Natural Usage:
 
-Never explain anything else.
+Rewrite ONLY the user's sentence into more natural English.
+
+Be concise.
+
+Do not write long introductions.
+
+If the user asks about a word:
+
+Return:
+
+Meaning
+Example
+Turkish meaning
+
+If the user asks grammar:
+
+Explain grammar.
+
+If the user asks conversation:
+
+Have a conversation.
+
+If the user asks translation:
+
+Translate.
+
+Always detect the user's intention before answering.
+
+Conversation:
+
+${conversation}
 `;
-
-const prompt =
-SYSTEM_PROMPT +
-"\n\n" +
-messages
-.map(m => `${m.role}: ${m.content}`)
-.join("\n");
-
 
   const response = await fetch("http://localhost:11434/api/generate", {
     method: "POST",
@@ -51,6 +103,26 @@ messages
 
   const data = await response.json();
 
-  
-  return data.response;
+  const text = data.response;
+
+  const getSection = (start, end) => {
+    const startIndex = text.indexOf(start);
+
+    if (startIndex === -1) return "";
+
+    const from = startIndex + start.length;
+
+    const endIndex = end
+      ? text.indexOf(end, from)
+      : text.length;
+
+    return text.substring(from, endIndex).trim();
+  };
+
+  return {
+    reply: getSection("###REPLY###", "###TRANSLATION###"),
+    translation: getSection("###TRANSLATION###", "###GRAMMAR###"),
+    grammar: getSection("###GRAMMAR###", "###NATURAL###"),
+    natural: getSection("###NATURAL###"),
+  };
 }

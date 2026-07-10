@@ -25,44 +25,46 @@ export default function Chat() {
 
   async function handleSend(text) {
     if (!text.trim()) return;
-
+  
     const userMessage = {
       id: crypto.randomUUID(),
       role: "user",
       content: text,
     };
-
-    setMessages((prev) => [...prev, userMessage]);
-
+  
+    const updatedMessages = [...messages, userMessage];
+  
+    setMessages(updatedMessages);
+  
     setIsTyping(true);
-
+  
     try {
-      const answer = await askAI([
-        ...messages,
-        userMessage,
-      ]);
-
-      setMessages((prev) => [
-        ...prev,
+      const answer = await askAI(updatedMessages);
+  
+      setMessages([
+        ...updatedMessages,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: answer,
+          content: answer.reply,
+          translation: answer.translation,
+          grammar: answer.grammar,
+          natural: answer.natural,
         },
       ]);
-    } catch (error) {
-      console.error("AI ERROR:", error);
-    
-      setMessages((prev) => [
-        ...prev,
+    } catch (err) {
+      console.error(err);
+  
+      setMessages([
+        ...updatedMessages,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: `❌ ${error.message}`,
+          content: "❌ AI bağlantısı kurulamadı.",
         },
       ]);
     }
-
+  
     setIsTyping(false);
   }
 

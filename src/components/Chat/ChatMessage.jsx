@@ -37,6 +37,68 @@ export default function ChatMessage({ message }) {
         )}
 
         {message.content}
+
+        {message.translation && (
+  <div
+    style={{
+      marginTop: 18,
+      paddingTop: 12,
+      borderTop: "1px solid rgba(255,255,255,.08)",
+    }}
+  >
+    <div
+      style={{
+        color: "#A78BFA",
+        fontWeight: 700,
+        marginBottom: 6,
+      }}
+    >
+      🇹🇷 Türkçe
+    </div>
+
+    <div>{message.translation}</div>
+  </div>
+)}
+
+{message.grammar && (
+  <div
+    style={{
+      marginTop: 16,
+    }}
+  >
+    <div
+      style={{
+        color: "#60A5FA",
+        fontWeight: 700,
+        marginBottom: 6,
+      }}
+    >
+      ✍️ Grammar
+    </div>
+
+    <div>{message.grammar}</div>
+  </div>
+)}
+
+{message.natural && (
+  <div
+    style={{
+      marginTop: 16,
+    }}
+  >
+    <div
+      style={{
+        color: "#34D399",
+        fontWeight: 700,
+        marginBottom: 6,
+      }}
+    >
+      💡 Natural Usage
+    </div>
+
+    <div>{message.natural}</div>
+  </div>
+)}
       </div>
     </div>
   );
