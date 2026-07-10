@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Chat from "./components/Chat/Chat";
+import { loadStorage, saveStorage } from "./utils/storage";
+import SettingsPage from "./components/Settings/Settings";
 
 import {
   Home,
@@ -16,6 +18,22 @@ import {
 
 export default function App() {
   const [toast, setToast] = useState(null);
+
+  const [appData, setAppData] = useState(null);
+  useEffect(() => {
+    async function init() {
+      const data = await loadStorage();
+      setAppData(data);
+    }
+  
+    init();
+  }, []);
+
+  useEffect(() => {
+    if (!appData) return;
+  
+    saveStorage(appData);
+  }, [appData]);
 
 const showToast = (message) => {
   setToast(message);
@@ -289,6 +307,10 @@ return (
       value="No medal yet"
     />
   </div>
+)}
+
+{page === "settings" && (
+  <SettingsPage />
 )}
 
 {page === "chat" && (

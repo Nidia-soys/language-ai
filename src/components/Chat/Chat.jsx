@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import ChatInput from "./ChatInput";
 import ChatMessage from "./ChatMessage";
+import { askAI } from "../../utils/ai";
 
 export default function Chat() {
   const [messages, setMessages] = useState([
     {
       id: crypto.randomUUID(),
       role: "assistant",
-      content: "Hello! 👋 I'm your AI language coach. How can I help you today?",
+      content:
+        "Hello! 👋 I'm your AI language coach. How can I help you today?",
     },
   ]);
 
@@ -21,9 +23,7 @@ export default function Chat() {
     });
   }, [messages, isTyping]);
 
-  function handleSend(text) {
-    console.log("SEND",text);
-    
+  async function handleSend(text) {
     if (!text.trim()) return;
 
     const userMessage = {
@@ -36,18 +36,34 @@ export default function Chat() {
 
     setIsTyping(true);
 
-    setTimeout(() => {
+    try {
+      const answer = await askAI([
+        ...messages,
+        userMessage,
+      ]);
+
       setMessages((prev) => [
         ...prev,
         {
           id: crypto.randomUUID(),
           role: "assistant",
-          content: `You said: "${text}"`,
+          content: answer,
         },
       ]);
+    } catch (error) {
+      console.error("AI ERROR:", error);
+    
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          content: `❌ ${error.message}`,
+        },
+      ]);
+    }
 
-      setIsTyping(false);
-    }, 800);
+    setIsTyping(false);
   }
 
   return (

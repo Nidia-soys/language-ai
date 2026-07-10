@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Send, Mic } from "lucide-react";
 
 export default function ChatInput({ onSend }) {
   const [text, setText] = useState("");
@@ -33,6 +34,9 @@ export default function ChatInput({ onSend }) {
         onChange={(e) => setText(e.target.value)}
         onKeyDown={handleKeyDown}
         style={{
+          minHeight:70,
+          maxHeight:180,
+          overflowY:"auto",
           flex: 1,
           resize: "none",
           borderRadius: 14,
@@ -45,20 +49,38 @@ export default function ChatInput({ onSend }) {
         }}
       />
 
+<button
+  style={{
+    width: 60,
+    border: "1px solid #334155",
+    borderRadius: 14,
+    background: "#1E293B",
+    color: "white",
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  }}
+>
+  <Mic size={18} />
+</button>
+
       <button
         onClick={submit}
         style={{
-          width: 110,
-          border: "none",
-          borderRadius: 14,
-          cursor: "pointer",
-          background: "#7C3AED",
-          color: "white",
-          fontWeight: 600,
-        }}
-      >
-        Send
-      </button>
+           width: 60,
+           border: "none",
+           borderRadius: 14,
+           cursor: "pointer",
+           background: "#7C3AED",
+           color: "white",
+           display: "flex",
+           justifyContent: "center",
+           alignItems: "center",
+  }}
+>
+  <Send size={18} />
+</button>
     </div>
   );
 }
